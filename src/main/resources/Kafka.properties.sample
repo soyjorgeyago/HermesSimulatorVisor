@@ -1,0 +1,7 @@
+bootstrap.servers=your_Kafka_server_IP:Port
+
+# Consumer
+group.id=your_consumer_group_id
+key.deserializer=key_deserializer
+value.deserializer=value_deserializer
+consumer.poll.timeout.ms=consumer_poll_timeout_in_milliseconds
