@@ -1,9 +1,5 @@
 package es.us.lsi.hermes.util;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import es.us.lsi.hermes.domain.Event;
-import es.us.lsi.hermes.domain.VehicleLocation;
 import es.us.lsi.hermes.simulator.VisorController;
 
 import java.io.IOException;
@@ -15,6 +11,10 @@ import java.util.logging.Logger;
 public class Utils {
 
     private static final Logger LOG = Logger.getLogger(VisorController.class.getName());
+
+    private static final String MARKER_GREEN_CAR_ICON_PATH = "resources/img/greenCar.png";
+    private static final String MARKER_YELLOW_CAR_ICON_PATH = "resources/img/yellowCar.png";
+    private static final String MARKER_RED_CAR_ICON_PATH = "resources/img/redCar.png";
 
     /**
      * Method for loading a properties file.
@@ -38,47 +38,25 @@ public class Utils {
         return result;
     }
 
-    /**
-     * Método para obtener los eventos de Ztreamy recibidos. Como pueden llegar
-     * eventos en forma de 'array' o de uno en uno, intentamos, en primer lugar,
-     * la obtención como un único evento, que será el más habitual, y si
-     * fallase, lo intentamos como 'array' de eventos.
-     *
-     * @param json JSON con el/los eventos recibidos.
-     * @return Array con el/los evento/s obtenido/s del JSON.
-     */
-    public static Event[] getEventsFromJson(String json) {
-        Event events[] = null;
-        Gson gson = new Gson();
+    public static int getIntValue(String propertyName, int defaultValue) {
+        String property = VisorController.getKafkaProperties().getProperty(propertyName, String.valueOf(defaultValue));
+        int value = defaultValue;
 
-        // Comprobamos si llega un solo evento
         try {
-            Event event = gson.fromJson(json, Event.class);
-            events = new Event[]{event};
-        } catch (JsonSyntaxException ex) {
-            LOG.log(Level.SEVERE, "getEventsFromJson() - Error al intentar obtener un evento desde el JSON", ex.getMessage());
+            value = Integer.parseInt(property);
+        } catch (NumberFormatException ex) {
+            LOG.log(Level.SEVERE, "validate() - Invalid value for {0}. Using default value: {1}", new Object[]{propertyName, defaultValue});
         }
 
-        if (events == null) {
-            try {
-                events = gson.fromJson(json, Event[].class);
-            } catch (JsonSyntaxException ex) {
-                LOG.log(Level.SEVERE, "getEventsFromJson() - Error al intentar obtener un array de eventos desde el JSON", ex.getMessage());
-            }
-        }
-
-        return events;
+        return value;
     }
 
-    public static VehicleLocation getVehicleLocationFromEvent(Event event) {
-        Gson gson = new Gson();
-
-        try {
-            return gson.fromJson(gson.toJson(event.getBody().get("Location")), VehicleLocation.class);
-        } catch (JsonSyntaxException ex) {
-            LOG.log(Level.SEVERE, "getVehicleLocationFromEvent() - Error al intentar obtener un 'Vehicle Location' de un evento", ex.getMessage());
-        }
-
-        return null;
+    public static String getIconForStressLevel(int stressLevel){
+        if (stressLevel > 80)
+            return MARKER_RED_CAR_ICON_PATH;
+        else if (stressLevel > 40)
+            return MARKER_YELLOW_CAR_ICON_PATH;
+        else
+            return MARKER_GREEN_CAR_ICON_PATH;
     }
 }

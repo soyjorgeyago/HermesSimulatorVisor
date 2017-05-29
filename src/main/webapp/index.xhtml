@@ -65,10 +65,13 @@
             <h:panelGroup id="gmapUpdaterPanel">
                 <p:poll interval="1" listener="#{visorController.updateMapGUI()}" oncomplete="handleMapComplete(xhr, status, args)"/>
             </h:panelGroup>
-            <h:panelGroup id="gmapUpdateDataset">
-                <p:poll interval="1" listener="#{visorController.updateFromInternet()}"/>
-            </h:panelGroup>
+            <!--<h:panelGroup id="gmapUpdateDataset">-->
+                <!--<p:poll interval="1" listener="#{visorController.updateFromInternet()}"/>-->
+            <!--</h:panelGroup>-->
             <p:layout fullPage="true">
+                <p:layoutUnit position="north">
+                    Hola mariola
+                </p:layoutUnit>
                 <p:layoutUnit position="center">
                     <p:gmap id="gmap" widgetVar="gmap" center="#{visorController.markerLatitudeLongitude}" zoom="10" type="ROADMAP" model="#{visorController.simulatedMapModel}" style="height:100%">
                         <p:ajax event="overlaySelect" listener="#{visorController.onMarkerSelect}"/>
