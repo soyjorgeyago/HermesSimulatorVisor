@@ -70,7 +70,11 @@
             <!--</h:panelGroup>-->
             <p:layout fullPage="true">
                 <p:layoutUnit position="north">
-                    Hola mariola
+                    <p:poll interval="1" update="vehicleCounter"/>
+                    <h:panelGrid columns="2">
+                        <h:outputText id="vehicleHeader" value="Vehicle counter: "/>
+                        <h:outputText id="vehicleCounter" value="#{visorController.vehicleCounter}"/>
+                    </h:panelGrid>
                 </p:layoutUnit>
                 <p:layoutUnit position="center">
                     <p:gmap id="gmap" widgetVar="gmap" center="#{visorController.markerLatitudeLongitude}" zoom="10" type="ROADMAP" model="#{visorController.simulatedMapModel}" style="height:100%">

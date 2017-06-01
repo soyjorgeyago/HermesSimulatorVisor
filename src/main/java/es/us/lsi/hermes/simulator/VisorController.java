@@ -48,6 +48,7 @@ public class VisorController implements IControllerObserver {
         marker.setVisible(false);
         simulatedMapModel.addOverlay(marker);
 
+        //FIXME
         System.out.println("CONSUMER CREATION");
         ActiveVehiclesConsumer consumer = new ActiveVehiclesConsumer(this);
         consumer.start();
@@ -105,6 +106,13 @@ public class VisorController implements IControllerObserver {
     public void update(Vehicle[] activeVehicles) {
         Set<String> oldKeys = new HashSet<>(markers.keySet());
 
+        if(activeVehicles == null) {
+            //FIXME
+            System.out.println("removing ALL keys");
+            removeFromMarkers(oldKeys);
+            return;
+        }
+
         for(Vehicle vehicle : activeVehicles){
             Marker analyzedVehicle = markers.get(vehicle.getId());
             Location currentLocation = vehicle.getMostRecentHistoricLocationEntry();
@@ -114,6 +122,9 @@ public class VisorController implements IControllerObserver {
             }
             LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
             String stressBasedIcon = Utils.getIconForStressLevel(vehicle.getStress());
+
+            //FIXME
+            System.out.println("SIZE: " + markers.keySet().size());
 
             // If the vehicle is new, add a new marker
             if (analyzedVehicle == null) {
@@ -134,13 +145,23 @@ public class VisorController implements IControllerObserver {
             }
         }
 
+        removeFromMarkers(oldKeys);
+    }
+
+    private static void removeFromMarkers(Set<String> oldKeys){
         // Delete the markers that doesn't match with an active vehicle
         for(String key : oldKeys){
+            //FIXME
+            System.out.println("REMOVING");
             markers.remove(key);
         }
     }
 
     public static Properties getKafkaProperties() {
         return KAFKA_PROPERTIES;
+    }
+
+    public int getVehicleCounter() {
+        return markers.size();
     }
 }

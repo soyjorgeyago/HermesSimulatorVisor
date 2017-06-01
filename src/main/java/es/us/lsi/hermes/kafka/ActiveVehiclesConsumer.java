@@ -1,7 +1,6 @@
 package es.us.lsi.hermes.kafka;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import es.us.lsi.hermes.domain.Vehicle;
 import es.us.lsi.hermes.simulator.IControllerObserver;
 import es.us.lsi.hermes.simulator.VisorController;
@@ -33,21 +32,16 @@ public class ActiveVehiclesConsumer extends ShutdownableThread {
 
     @Override
     public void doWork() {
-        // The 'consumer' for each 'Vehicle Locations' will poll every 'pollTimeout' milliseconds, to get all the data received by Kafka.
         ConsumerRecords<Long, String> records = consumer.poll(consumerPollTimeout);
+
+        ConsumerRecord<Long, String> last = null;
         for (ConsumerRecord<Long, String> record : records) {
+            last = record;
+        }
 
-            //FIXME
-            System.out.println("RECORD FOUND");
-            System.out.println(record.value());
-            Vehicle[] activeVehicles = gson.fromJson(record.value(), Vehicle[].class);
-//            Vehicle[] activeVehicles = gson.fromJson(record.value(), new TypeToken<Vehicle>(){}.getType());
-
-            if(activeVehicles != null) {
-                //FIXME
-                System.out.println("RECORD SENT");
-                observer.update(activeVehicles);
-            }
+        if(last != null) {
+            Vehicle[] activeVehicles = gson.fromJson(last.value(), Vehicle[].class);
+            observer.update(activeVehicles);
         }
     }
 
