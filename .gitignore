@@ -44,3 +44,4 @@ build.xml
 
 # Project specific
 manifest.mf
+src/main/resources/Kafka.properties
