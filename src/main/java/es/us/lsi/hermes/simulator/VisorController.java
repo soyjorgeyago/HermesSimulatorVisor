@@ -115,7 +115,7 @@ public class VisorController implements IControllerObserver {
 
         for(Vehicle vehicle : activeVehicles){
             Marker analyzedVehicle = markers.get(vehicle.getId());
-            Location currentLocation = vehicle.getMostRecentHistoricLocationEntry();
+            Location currentLocation = vehicle.getLastLocation();
             if(currentLocation == null){
                 LOG.log(Level.SEVERE, "The vehicle set has no locations");
                 continue;
@@ -128,6 +128,7 @@ public class VisorController implements IControllerObserver {
 
             // If the vehicle is new, add a new marker
             if (analyzedVehicle == null) {
+                //FIXME
                 System.out.println("NUEVO");
                 Marker m = new Marker(latLng, "Id: " + vehicle.getId(), null, stressBasedIcon);
                 m.setId(vehicle.getId());
@@ -138,6 +139,7 @@ public class VisorController implements IControllerObserver {
 
             // If the vehicle has an assigned marker, update the location and remove the key from the outdated ones
             } else {
+                //FIXME
                 System.out.println("UPDATE");
                 markers.get(vehicle.getId()).setLatlng(latLng);
                 markers.get(vehicle.getId()).setIcon(stressBasedIcon);
